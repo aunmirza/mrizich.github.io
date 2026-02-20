@@ -63,7 +63,7 @@ async function uploadAndPredict() {
   formData.append("file", file);
   formData.append("model", model);
 
-  const response = await fetch("YOUR_PYTHON_BACKEND_URL/predict", {
+  const response = await fetch("https://ml-backend-yury.onrender.com/predict", {
     method: "POST",
     body: formData
   });
