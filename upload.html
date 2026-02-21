@@ -247,7 +247,99 @@
 </div>
 
 <script>
-  /* Your JS stays the same */
+async function handleUpload() {
+  const file = document.getElementById("fileInput").files[0];
+  const model = document.getElementById("modelSelect").value;
+  const status = document.getElementById("status");
+  const resultsSection = document.getElementById("resultsSection");
+  const metricsContainer = document.getElementById("metricsContainer");
+  const chartsContainer = document.getElementById("chartsContainer");
+  const rawOutput = document.getElementById("rawOutput");
+
+  if (!file) {
+    status.textContent = "Please select a file first.";
+    status.style.color = "#d9534f";
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("model", model);
+
+  status.textContent = "Processing... please wait.";
+  status.style.color = "#0a1a3a";
+
+  resultsSection.style.display = "none";
+  metricsContainer.innerHTML = "";
+  chartsContainer.innerHTML = "";
+  rawOutput.textContent = "";
+
+  try {
+    const response = await fetch("https://ml-backend-yury.onrender.com/predict", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+
+    status.textContent = "Done! Scroll down to see results.";
+    status.style.color = "#0a1a3a";
+
+    resultsSection.style.display = "block";
+    rawOutput.textContent = JSON.stringify(result, null, 2);
+
+    // METRICS
+    const m = result.metrics || {};
+    const metricsList = [
+      { label: "R² Score", key: "r2" },
+      { label: "MAE", key: "mae" },
+      { label: "MSE", key: "mse" },
+      { label: "Accuracy", key: "accuracy" },
+      { label: "Silhouette Score", key: "silhouette" }
+    ];
+
+    metricsList.forEach(item => {
+      const value = m[item.key];
+      if (value !== null && value !== undefined) {
+        const card = document.createElement("div");
+        card.className = "metric-card";
+        card.innerHTML = `
+          <div class="metric-label">${item.label}</div>
+          <div class="metric-value">${typeof value === "number" ? value.toFixed(4) : value}</div>
+        `;
+        metricsContainer.appendChild(card);
+      }
+    });
+
+    // CHARTS
+    const charts = result.charts || {};
+    const chartDefs = [
+      { key: "actual_vs_predicted", title: "Actual vs Predicted" },
+      { key: "residuals", title: "Residual Plot" },
+      { key: "feature_importance", title: "Feature Importance" },
+      { key: "confusion_matrix", title: "Confusion Matrix" },
+      { key: "clusters", title: "Cluster Plot" }
+    ];
+
+    chartDefs.forEach(c => {
+      const base64 = charts[c.key];
+      if (base64) {
+        const card = document.createElement("div");
+        card.className = "chart-card";
+        card.innerHTML = `
+          <h3>${c.title}</h3>
+          <img src="data:image/png;base64,${base64}">
+        `;
+        chartsContainer.appendChild(card);
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    status.textContent = "Error: " + error;
+    status.style.color = "#d9534f";
+  }
+}
 </script>
 
 </body>
