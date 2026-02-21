@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AI Playground</title>
+  <title>Upload & Predict</title>
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 
 <header>
-  <h1>AI Playground</h1>
+  <h1>Upload & Predict</h1>
   <nav>
     <a href="index.html">Home</a>
-    <a href="upload.html">Upload & Predict</a>
+    <a href="playground.html">AI Playground</a>
     <a href="ai-chat.html">AI Chat</a>
   </nav>
 </header>
@@ -18,28 +18,35 @@
 <div class="container">
 
   <div class="section">
-    <h2>Welcome to the AI Playground</h2>
-    <p>Choose a tool below to explore machine learning features.</p>
-  </div>
-
-  <div class="section">
-    <h2>Machine Learning Tools</h2>
+    <h2>Upload Your File</h2>
+    <p>Select a CSV or Excel file to run predictions.</p>
 
     <div class="card">
-      <h3>📊 Upload Your Data & Run Predictions</h3>
-      <p>Upload your CSV/Excel file and run ML models instantly.</p>
-      <a class="button" href="upload.html">Go to Upload Page</a>
+      <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" />
+      <button class="button" onclick="handleUpload()">Upload File</button>
+      <p id="status"></p>
     </div>
-
-    <div class="card">
-      <h3>🤖 AI Chat Assistant</h3>
-      <p>Chat with the AI to get help, explanations, and insights.</p>
-      <a class="button" href="ai-chat.html">Open AI Chat</a>
-    </div>
-
   </div>
 
 </div>
+
+<script>
+function handleUpload() {
+  const file = document.getElementById("fileInput").files[0];
+  const status = document.getElementById("status");
+
+  if (!file) {
+    status.textContent = "Please select a file first.";
+    status.style.color = "red";
+    return;
+  }
+
+  status.textContent = "File uploaded: " + file.name;
+  status.style.color = "green";
+
+  // You can add ML logic here later (client-side only)
+}
+</script>
 
 </body>
 </html>
