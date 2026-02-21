@@ -19,11 +19,14 @@
 
   <div class="section">
     <h2>Upload Your File</h2>
-    <p>Select a CSV or Excel file to run predictions.</p>
+    <p>Select a CSV or Excel file from your computer.</p>
 
     <div class="card">
+      <!-- THIS is where you upload from your computer -->
       <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" />
+
       <button class="button" onclick="handleUpload()">Upload File</button>
+
       <p id="status"></p>
     </div>
   </div>
@@ -41,7 +44,7 @@ function handleUpload() {
     return;
   }
 
-  status.textContent = "File uploaded: " + file.name;
+  status.textContent = "File selected: " + file.name;
   status.style.color = "green";
 
   // You can add ML logic here later (client-side only)
